@@ -13,7 +13,7 @@ public class EnemySwing : MonoBehaviour {
 	public enum State {windUp, swinging, reset, atEase};
 	public State state;
 	
-	EnemyMovement parent;
+	public Transform enemyParent;
 	
 	Vector3 startPosition;
 	Quaternion startRotation;
@@ -24,7 +24,6 @@ public class EnemySwing : MonoBehaviour {
 		state = State.atEase;
 		startPosition = transform.localPosition;
 		startRotation = transform.localRotation;
-		parent = transform.parent.GetComponent<EnemyMovement>();
 	}
 	
 	// Update is called once per frame
@@ -44,7 +43,7 @@ public class EnemySwing : MonoBehaviour {
 			}
 		}
 		else if (state == State.swinging) {
-			Vector3 pivot = transform.parent.position;
+			Vector3 pivot = enemyParent.position;
 			transform.RotateAround(pivot, Vector3.forward, swingSpeed * Time.deltaTime * 10);
 			if (transform.localEulerAngles.z >= (135 + followThrough)) {
 				state = State.reset;
@@ -58,12 +57,12 @@ public class EnemySwing : MonoBehaviour {
 	
 	
 	void Reset() {
-		GameObject newSword = Instantiate(this.gameObject, (this.gameObject.transform.parent.position + startPosition), startRotation, this.transform.parent);
+		GameObject newSword = Instantiate(this.gameObject, (enemyParent.position + startPosition), startRotation, transform.parent);
 		Destroy(gameObject);
 		newSword.transform.localPosition = startPosition;
 		newSword.transform.localRotation = startRotation;
 		newSword.name = this.gameObject.name;
-		parent.attacking = false;
-		parent.RangeCheck();
+		enemyParent.GetComponent<EnemyMovement>().attacking = false;
+		enemyParent.GetComponent<EnemyMovement>().RangeCheck();
 	}
 }

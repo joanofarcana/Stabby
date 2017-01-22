@@ -11,6 +11,8 @@ public class EnemyMovement : MonoBehaviour {
 	public bool inRange;
 	public bool attacking;
 	
+	EnemySwing sword;
+	
 	// Use this for initialization
 	void Start () {
 	}
@@ -18,17 +20,11 @@ public class EnemyMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (!inRange) {
-			Face();
 			Move();
 		}
 		else if (!attacking){
 			Attack();
 		}
-	}
-	
-	void Face () {
-		float atan = Mathf.Atan2((target.position.y - transform.position.y), (target.position.x - transform.position.x)) * Mathf.Rad2Deg;
-		transform.rotation = Quaternion.Euler(0.0F, 0.0F, atan - 90);
 	}
 	
 	void Move () {
@@ -39,7 +35,8 @@ public class EnemyMovement : MonoBehaviour {
 	
 	void Attack() {
 		attacking = true;
-		transform.GetChild(1).GetComponent<EnemySwing>().state = EnemySwing.State.windUp;
+		sword = this.GetComponentInChildren<EnemySwing>();
+		sword.state = EnemySwing.State.windUp;
 	}
 	
 	public bool RangeCheck() {
